@@ -20,7 +20,6 @@ class HashTable:
     def _hash(self, key):
         '''
         Hash an arbitrary key and return an integer.
-
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
         return hash(key)
@@ -29,7 +28,6 @@ class HashTable:
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
-
         OPTIONAL STRETCH: Research and implement DJB2
         '''
         pass
@@ -54,8 +52,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # make sure we have open space
+        # iterate and to check if there are None values?
+        # if len(self.storage) > self.capacity:
+        #     print('ERROR: Array is full')
+        #     return
 
+        index = self._hash_mod(key)
+        print('index:', index)
+
+        # if key isn't in storage
+        if self.storage[index] == None:
+            self.storage[index] = LinkedPair(key, value)
+            print('inserted:', self.storage[index].value)
+        else:
+            print('ERROR: key out of range')
+            return
 
 
     def remove(self, key):
