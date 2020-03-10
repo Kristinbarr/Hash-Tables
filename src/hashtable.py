@@ -58,8 +58,7 @@ class HashTable:
         #     print('ERROR: Array is full')
         #     return
 
-        index = self._hash_mod(key)
-        print('index:', index)
+        index = self._hash_mod(self._hash(key))
 
         # if key isn't in storage
         if self.storage[index] == None:
@@ -77,8 +76,16 @@ class HashTable:
         Print a warning if the key is not found.
 
         Fill this in.
-        '''
-        pass
+        '''        
+        index = self._hash_mod(self._hash(key))
+
+        if self.storage[index]:
+            print('TO DELETE:', self.storage[index].value)
+            self.storage[index] = None
+            return
+        else: 
+            print('DELETE ITEM NOT FOUND')
+            return
 
 
     def retrieve(self, key):
@@ -89,7 +96,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(self._hash(key))
+        
+        if self.storage[index]:
+            print('RETRIEVED:',self.storage[index].value)
+            return self.storage[index].value
+        else: 
+            print('RETRIEVE ITEM NOT FOUND')
+            return
 
 
     def resize(self):
