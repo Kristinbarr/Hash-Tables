@@ -44,77 +44,89 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         # Part 1: Hash collisions should be handled with an error warning. (Think about and
         # investigate the impact this will have on the tests)
-
         # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
-
         Fill this in.
         '''
-        # make sure we have open space
-        # iterate and to check if there are None values?
-        # if len(self.storage) > self.capacity:
-        #     print('ERROR: Array is full')
-        #     return
 
-        index = self._hash_mod(self._hash(key))
+        # compute the index
+        index = self._hash_mod(key)
+        # save node at current index
+        node = self.storage[index]
 
-        # if key isn't in storage
-        if self.storage[index] == None:
+        # if no collision:
+        if node is None:
+            # set current node to the generated index
             self.storage[index] = LinkedPair(key, value)
-            print('inserted:', self.storage[index].value)
-        else:
-            print('ERROR: key out of range')
+            print('inserted:', index, value)
             return
+
+        # if collision: iterate to the end of the LL from the index spot
+        # save node in outer scope
+        prev = node
+
+        while node is not None:
+            print('collision', index, 'traversing!', node.value)
+            # reassign prev temp variable
+            prev = node
+            # change node to the current's next node
+            node = node.next
+        
+        prev.next = LinkedPair(key, value)
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Fill this in.
         '''        
-        index = self._hash_mod(self._hash(key))
+        index = self._hash_mod(key)
 
-        if self.storage[index]:
+        if self.storage[index] is not None:
             print('TO DELETE:', self.storage[index].value)
             self.storage[index] = None
             return
         else: 
-            print('DELETE ITEM NOT FOUND')
-            return
+            print('WARNING: delete key not found')
 
 
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Fill this in.
         '''
-        index = self._hash_mod(self._hash(key))
-        
-        if self.storage[index]:
-            print('RETRIEVED:',self.storage[index].value)
-            return self.storage[index].value
-        else: 
-            print('RETRIEVE ITEM NOT FOUND')
-            return
+        index = self._hash_mod(key)
+
+        print('RETRIEVED:',self.storage[index].value)
+        return self.storage[index].value
+
+        # if self.storage[index] is not None:
+        #     print('RETRIEVED:',self.storage[index].value)
+        #     return self.storage[index]
+        # else: 
+        #     print('WARNING: retrieve key not found')
+        #     return
 
 
     def resize(self):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
         Fill this in.
         '''
-        pass
+        # save a copy of the storage
+        old_storage = self.capacity.copy()
+        # set new capicity to be double
+        self.capacity *= 2
+        # create a new storage that will have new capacity
+        self.storage = [None] * self.capacity
 
+        # copy all items over to new doubled capacity hash table
+        for item in old_storage:
+            self.insert(item.key, item.value)
 
 
 if __name__ == "__main__":
