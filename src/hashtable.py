@@ -15,12 +15,12 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
+    def __repr__(self):
+        return f"<{self.key}, {self.value}>"
 
     def _hash(self, key):
         '''
         Hash an arbitrary key and return an integer.
-
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
         return hash(key)
@@ -29,7 +29,6 @@ class HashTable:
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
-
         OPTIONAL STRETCH: Research and implement DJB2
         '''
         pass
@@ -46,24 +45,35 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         # Part 1: Hash collisions should be handled with an error warning. (Think about and
         # investigate the impact this will have on the tests)
-
         # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
-
         Fill this in.
         '''
-        pass
+        # hash_modulo the key to find the hashed key
+        hashed_idx = self._hash_mod(key)
 
+        # save item at storage index
+        node = self.storage[hashed_idx]
+
+        # if node exists already,
+        if node is not None:
+            # day 1: overwrite value and print warning
+            if node.key != key:
+                print('WARNING: overwritting value')
+                node.key = key
+            node.value = value
+
+        # if no collision,
+        else:
+            # if not, set new linkedPair at hashed_idx
+            self.storage[hashed_idx] = LinkedPair(key, value)
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Fill this in.
         '''
         pass
@@ -72,22 +82,31 @@ class HashTable:
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Fill this in.
         '''
-        pass
+        # hash_mod the key
+        hased_idx = self._hash_mod(key)
+
+        # save item at index
+        node = self.storage[hased_idx]
+        # check if node exists at hashed index with matching keys
+        if node is not None:
+            # if key matches, return value
+            if node.key == key:
+                return node.value
+        # if not, return None
+        else:
+            return None
 
 
     def resize(self):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
         Fill this in.
         '''
-        pass
+        self.capac
 
 
 
