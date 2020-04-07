@@ -59,20 +59,22 @@ class HashTable:
         if node is None:
             # set current node to the generated index
             self.storage[index] = LinkedPair(key, value)
-            print('inserted:', index, value)
             return
 
         # if collision: iterate to the end of the LL from the index spot
         # save node in outer scope
         prev = node
-
+        # iterate until the end of the LL
         while node is not None:
-            print('collision', index, 'traversing!', node.value)
+            # if current node key == new key, we need to overwrite the value
+            if node.key == key:
+                node.value = value
+                return
             # reassign prev temp variable
             prev = node
             # change node to the current's next node
             node = node.next
-        
+        # if we traverse the whole LL and no key matches, insert a new LL
         prev.next = LinkedPair(key, value)
 
 
@@ -81,13 +83,31 @@ class HashTable:
         Remove the value stored with the given key.
         Print a warning if the key is not found.
         Fill this in.
-        '''        
+        '''
+        # [idx 0]: (K:2 V:2 N: n )
+        # [idx 1]: (K:0 V:0 N:(1)) -> (K:1 V:1 N:(4)) -> (K:4 V:4 N: n )
+        # [idx 2]: (K:3 V:3 N: n )
+
         index = self._hash_mod(key)
 
+        # if the index is in the hash table,
         if self.storage[index] is not None:
-            print('TO DELETE:', self.storage[index].value)
-            self.storage[index] = None
-            return
+            # if the key matches the cur key
+            if self.storage[index].key == key:
+                # delete the cur value and key
+                self.storage[index] = self.storage[index].next
+            # else we need to traverse and look for it 
+            else:
+                # keep track of trailing/prev node
+                trailing_node = self.storage[index]
+                # keep track of curr node
+                cur_node = trailing_node.next
+
+                while cur_node is not None:
+                    if cur_node.key == key:
+                        trailing_node.next = cur_node.next
+                    cur_node = cur_node.next
+                    trailing_node = trailing_node.next
         else: 
             print('WARNING: delete key not found')
 
@@ -100,8 +120,14 @@ class HashTable:
         '''
         index = self._hash_mod(key)
 
-        print('RETRIEVED:',self.storage[index].value)
-        return self.storage[index].value
+        node = self.storage[index]
+
+        while node is not None:
+            if node.key == key:
+                return node.value
+            node = node.next
+
+        return node
 
         # if self.storage[index] is not None:
         #     print('RETRIEVED:',self.storage[index].value)
@@ -118,7 +144,7 @@ class HashTable:
         Fill this in.
         '''
         # save a copy of the storage
-        old_storage = self.capacity.copy()
+        old_storage = self.storage.copy()
         # set new capicity to be double
         self.capacity *= 2
         # create a new storage that will have new capacity
@@ -126,10 +152,13 @@ class HashTable:
 
         # copy all items over to new doubled capacity hash table
         for item in old_storage:
-            self.insert(item.key, item.value)
+            if item is not None:
+                self.insert(item.key, item.value)
 
 
 if __name__ == "__main__":
+    print("")
+
     ht = HashTable(2)
 
     ht.insert("line_1", "Tiny hash table")
